@@ -18,7 +18,7 @@ class GoodlineString {
 
         else {
         
-            //для уровня Задания уровня 6.
+            //для  Задания уровня 6.
             System.out.print("----> Enter the text: ");
             String str = in.nextLine();
             arrayOfWords = Arrays.asList(str.split(" "));
