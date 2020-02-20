@@ -1,0 +1,87 @@
+import java.util.*;
+
+class GoodlineString {
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        List<String> arrayOfWords = new ArrayList<>();
+        Map<String, Integer> hashMapOfWords = new LinkedHashMap<>();//необходимо для заданий 3 и 4 уровня.
+
+        System.out.println("----------------------");
+        System.out.println("Start of the program!");
+        System.out.println("----------------------\n");
+
+
+        if (args.length != 0) {
+            Collections.addAll(arrayOfWords, args);
+        }
+        
+
+        else {
+        
+            //для уровня Задания уровня 6.
+            System.out.print("----> Enter the text: ");
+            String str = in.nextLine();
+            arrayOfWords = Arrays.asList(str.split(" "));
+        }
+
+
+        System.out.println("\nУровень 1.Cписок слов: ");
+        System.out.println("------------------------------ ");
+        for (String item : arrayOfWords) {
+            System.out.println(item);
+        }
+
+
+        Collections.sort(arrayOfWords);
+        System.out.println("\nУровень 2. Слова отсортированы: ");
+        System.out.println("------------------------------ ");
+
+        for (String item : arrayOfWords) {
+            System.out.println(item);
+        }
+
+
+        System.out.println("\nУровень 3. Уникальные слова : ");
+        System.out.println("---------------------------- ");
+
+        int countRepeatsOfCurrentWord, countOfDuplicates;
+        for (int i = 0; i < arrayOfWords.size(); i++) {
+
+            countRepeatsOfCurrentWord = 0;
+            countOfDuplicates = 0;
+
+            for (int j = 0; j < arrayOfWords.size(); j++) {
+
+                if (arrayOfWords.get(i).equals(arrayOfWords.get(j))) {
+                    countRepeatsOfCurrentWord++;
+
+//                    Тут мы избавляемся от вывода повторяющихся элементов .
+                    if (j < i) {
+                        countOfDuplicates++;
+                    }
+
+                }
+            }
+
+            if (countOfDuplicates == 0) {
+                System.out.println(arrayOfWords.get(i));
+                hashMapOfWords.put(arrayOfWords.get(i), countRepeatsOfCurrentWord);
+            }
+
+        }
+
+
+        System.out.println("\nУровень 4. После каждого слова вывести количество повторений: ");
+        System.out.println("------------------------------------------------------------ ");
+
+        for (Map.Entry<String, Integer> entry : hashMapOfWords.entrySet()) {
+            System.out.println(entry.getKey() + " " + entry.getValue());
+        }
+
+        System.out.println("\n-------------------");
+        System.out.println("End of the program!");
+        System.out.println("-------------------");
+
+    }
+
+}
