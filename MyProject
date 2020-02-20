@@ -1,0 +1,273 @@
+public class MyBinaryTree {
+
+    private static int levelIndex;
+    private static int countOfNumbersInLevel;
+    private static int[] elementsForBinaryThree = {8, 5, 12, 3, 6, 9, 13, 4, 2, 7};
+//  private static int[] elementsForBinaryThree = {20, 10, 30, 5, 15, 25, 35, 2, 7, 12, 17, 22, 27, 32, 40};
+
+    private static int[] binaryTree = new int[lengthForBinaryThree()];
+    private static int[] directionsArrayForNumber = new int[elementsForBinaryThree.length - 1];
+    private static int lengthOfLevel;
+    private static int indexInDirectionArray;
+    private static int maxIndexOfLevel = 0;
+    private static int positionForNumber;
+
+
+    public static void main(String[] args) {
+
+        System.out.println("\nSTART OF PROGRAM!");
+        System.out.println("\nThree of binary search: ");
+
+        for (int i = 0; i < elementsForBinaryThree.length; i++) {
+            insertNumberInBinaryTree(elementsForBinaryThree[i]);
+        }
+
+        outPutBinaryTreeLikeArray();
+
+        System.out.println("\nlength for binary tree = " + lengthForBinaryThree());
+
+        System.out.println();
+
+        System.out.println("maxIndexOfLevel = " + maxIndexOfLevel);
+
+        for (int i = 0; i < elementsForBinaryThree.length; i++) {
+            System.out.println("Finding number - " + elementsForBinaryThree[i]);
+            searchInBinaryTree(elementsForBinaryThree[i]);
+        }
+
+        System.out.println("Finding number - 22 ");
+        searchInBinaryTree(22);
+
+        System.out.println("\nBinary Tree:");
+        printBinaryTreeLikeTree();
+
+    }
+
+/*
+            8
+          /   \
+        5       12
+       / \     /  \
+      3   6   9    13
+ */
+
+
+    private static void outPutBinaryTreeLikeArray() {
+
+
+        int borderOfLevel = 3;
+        int space = 0;
+        levelIndex = 0;
+
+        for (int i = 0, j = 1; i < binaryTree.length; i++, j++) {
+            space++;
+
+            System.out.print(binaryTree[i] + " ");
+
+            if (space % 3 == 0 & (j != borderOfLevel)) {
+                System.out.print("- ");
+            }
+
+            if (j == borderOfLevel) {
+                System.out.print("| ");
+                borderOfLevel *= 2;
+                j = 0;
+                levelIndex++;
+            }
+
+            if (levelIndex == maxIndexOfLevel + 1) {
+                return;
+            }
+
+        }
+
+    }
+
+    private static int lengthForBinaryThree() {
+        int lengthBinaryThree = 0;
+
+        for (int i = 1; i <= elementsForBinaryThree.length; i++) {
+
+            levelIndex = i;
+            countOfNumbersInLevel = (int) Math.pow(2, (levelIndex - 1));
+            lengthOfLevel = countOfNumbersInLevel * 3;
+            lengthBinaryThree += lengthOfLevel;
+        }
+
+        return lengthBinaryThree;
+
+    }
+
+
+    private static void refreshArray(int lastIndex) {
+
+        for (int i = 0; i < lastIndex; i++) {
+            directionsArrayForNumber[i] = 0;
+        }
+
+    }
+
+    private static void insertNumberInBinaryTree(int inputNumber) {
+        boolean isNextLevel;
+//        boolean isFindPlaceForNumber = false;
+        int lowerIndexOfBorder; // == lowerIndexOfBorder = 0;
+        int higherIndexOfBorder = 2;
+        int previousPositionForNumber;
+
+        levelIndex = 1;
+        positionForNumber = 1;
+        refreshArray(indexInDirectionArray);
+        indexInDirectionArray = 0;
+
+
+        while (true) {
+            isNextLevel = false;
+
+            if (binaryTree[positionForNumber] == 0) {
+                binaryTree[positionForNumber] = inputNumber;
+                return;
+
+            } else if (inputNumber > binaryTree[positionForNumber]) {
+                directionsArrayForNumber[indexInDirectionArray++] = 1;
+
+                if (binaryTree[positionForNumber + 1] != 0) {
+                    positionForNumber = binaryTree[positionForNumber + 1];
+                    isNextLevel = true;
+
+                }
+
+            } else if (inputNumber < binaryTree[positionForNumber]) {
+                directionsArrayForNumber[indexInDirectionArray++] = -1;
+
+                if (binaryTree[positionForNumber - 1] != 0) {
+                    positionForNumber = binaryTree[positionForNumber - 1];
+                    isNextLevel = true;
+                }
+
+            }
+
+            ++levelIndex;
+
+            if (levelIndex > maxIndexOfLevel) {
+                maxIndexOfLevel = levelIndex;
+            }
+
+            countOfNumbersInLevel = (int) Math.pow(2, (levelIndex - 1));
+            lengthOfLevel = countOfNumbersInLevel * 3;
+
+            lowerIndexOfBorder = higherIndexOfBorder + 1;
+            higherIndexOfBorder += lengthOfLevel;
+
+            if (isNextLevel) {
+                continue;
+            }
+
+            previousPositionForNumber = positionForNumber;
+
+            for (int i = 0; i < indexInDirectionArray + 1; i++) {
+
+                if (directionsArrayForNumber[i] == 1) {
+                    lowerIndexOfBorder = (lowerIndexOfBorder + higherIndexOfBorder) / 2 + 1;
+
+                }
+
+                if (directionsArrayForNumber[i] == -1) {
+                    higherIndexOfBorder = (lowerIndexOfBorder + higherIndexOfBorder) / 2;
+                }
+
+                if (i == indexInDirectionArray) {
+
+                    if (directionsArrayForNumber[i - 1] == 1) {
+                        positionForNumber = (lowerIndexOfBorder + higherIndexOfBorder) / 2;
+                        binaryTree[previousPositionForNumber + 1] = positionForNumber;
+                    }
+
+                    if (directionsArrayForNumber[i - 1] == -1) {
+                        positionForNumber = (lowerIndexOfBorder + higherIndexOfBorder) / 2;
+                        binaryTree[previousPositionForNumber - 1] = positionForNumber;
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+
+    private static void printBinaryTreeLikeTree() {
+        levelIndex = 1;
+        countOfNumbersInLevel = 0;
+        positionForNumber = 1;
+        int countOfNumbersInMaxLevel = (int) Math.pow(2, (maxIndexOfLevel - 1));
+        int space;
+
+        for (levelIndex = 1; levelIndex <= maxIndexOfLevel; levelIndex++) {
+
+            countOfNumbersInLevel = (int) Math.pow(2, (levelIndex - 1));
+            space = (countOfNumbersInMaxLevel - countOfNumbersInLevel) / 2;
+
+            if (levelIndex != maxIndexOfLevel) {
+
+                for (int i = 0; i < space * 2; i++) {
+                    System.out.print(" ");
+                }
+
+                if (levelIndex == 1) {
+                    System.out.print("  ");
+                }
+            }
+
+            do {
+                --countOfNumbersInLevel;
+                System.out.print(binaryTree[positionForNumber] + " ");
+                positionForNumber += 3;
+
+            } while (countOfNumbersInLevel != 0);
+
+            System.out.println();
+        }
+
+    }
+
+    private static void searchInBinaryTree(int findingNumber) {
+        positionForNumber = 1;
+        boolean stop = false;
+
+        while (true) {
+
+            if (findingNumber == binaryTree[positionForNumber]) {
+                System.out.println("Find number!");
+                stop = true;
+                return;
+            }
+
+            if (findingNumber > binaryTree[positionForNumber]) {
+
+
+                if (binaryTree[positionForNumber + 1] == 0) {
+                    System.out.println("no such number");
+                    return;
+                }
+
+                positionForNumber = binaryTree[positionForNumber + 1];
+
+            }
+
+            if (findingNumber < binaryTree[positionForNumber]) {
+
+
+                if (binaryTree[positionForNumber - 1] == 0) {
+                    System.out.println("no such number");
+                    return;
+                }
+
+                positionForNumber = binaryTree[positionForNumber - 1];
+
+            }
+        }
+
+    }
+
+}
